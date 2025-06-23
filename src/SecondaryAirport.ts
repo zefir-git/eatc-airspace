@@ -1,3 +1,4 @@
+import {Beacon} from "./navigation/index.js";
 import {PrimaryAirport} from "./PrimaryAirport.js";
 
 export class SecondaryAirport extends PrimaryAirport {
@@ -7,7 +8,8 @@ export class SecondaryAirport extends PrimaryAirport {
      * @param pronunciation
      * @param initialClimb
      * @param flow Approximate traffic flow, in flights per hour per active runway. Increases slightly with score.
-     * @param inboundBeacon The default initial beacon (from {@link Airspace#beacons}) for arrivals.
+     * @param inboundBeacon The default initial beacon for arrivals. If not already in {@link Airspace#beacons}, it
+     *     will be added when this airport is registered.
      */
     public constructor(
         code: string,
@@ -15,7 +17,7 @@ export class SecondaryAirport extends PrimaryAirport {
         pronunciation: string,
         initialClimb: number,
         public readonly flow: number,
-        public readonly inboundBeacon: string,
+        public readonly inboundBeacon: Beacon,
     ) {
         super(code, name, pronunciation, initialClimb);
     }

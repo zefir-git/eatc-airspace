@@ -4,6 +4,7 @@ import {Fix} from "../navigation/Fix.js";
 import {NamedFix} from "../navigation/NamedFix.js";
 import {PrimaryAirport} from "../PrimaryAirport.js";
 import {Registry} from "../Registry.js";
+import {SecondaryAirport} from "../SecondaryAirport.js";
 import {Radius} from "../shapes/Radius.js";
 import {Shape} from "../shapes/Shape.js";
 import {WakeCategory} from "../WakeCategory.js";
@@ -116,6 +117,8 @@ export class Airspace extends Registry implements AirspaceOptions {
      * @param beacon The beacon to add.
      */
     public addBeacon(beacon: Beacon): Airspace {
+        if (this.#beacons.some(b => b.name === beacon.name))
+            return this;
         this.#beacons.push(beacon);
         this.addFix(beacon);
         return this;
@@ -148,5 +151,12 @@ export class Airspace extends Registry implements AirspaceOptions {
         if (this.#primaryAirport === null)
             throw new Error("Primary airport is not set");
         return this.#primaryAirport;
+    }
+
+    public override addSecondaryAirport(...airport: SecondaryAirport[]): this {
+        super.addSecondaryAirport(...airport);
+        for (const a of airport)
+            this.addBeacon(a.inboundBeacon);
+        return this;
     }
 }

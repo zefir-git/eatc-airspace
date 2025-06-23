@@ -133,6 +133,7 @@ export class Airspace extends Registry implements AirspaceOptions {
         this.#primaryAirport = primaryAirport;
         try {
             this.addRunway(...primaryAirport.runways)
+                .addFix(...primaryAirport.sids);
         }
         catch (e) {}
         return this;

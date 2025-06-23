@@ -59,6 +59,7 @@ export class Registry {
             this.airports.set(a.code, a);
             try {
                 this.addRunway(...a.runways)
+                    .addFix(...a.sids);
             }
             catch (e) {}
         }

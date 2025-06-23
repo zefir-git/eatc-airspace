@@ -46,6 +46,7 @@ export namespace Polyline {
          * @param r The red component (0–255).
          * @param g The green component (0–255).
          * @param b The blue component (0–255).
+         * @throw {@link !RangeError} If any component is out of [0, 255] range.
          */
         public constructor(public readonly r: number, public readonly g: number, public readonly b: number) {
             if (r < 0 || r > 255)
@@ -58,6 +59,9 @@ export namespace Polyline {
 
         /**
          * Create RGB colour from a number. You can specify a hex number, e.g. 0x00FF00.
+         *
+         * @param hex A 3-byte unsigned integer.
+         * @throw {@link !RangeError} If the number is not a 3-byte unsigned integer.
          */
         public static hex(hex: number): RGB {
             if (hex < 0 || hex > 0xFFFFFF)

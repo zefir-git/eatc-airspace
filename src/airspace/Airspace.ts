@@ -131,6 +131,10 @@ export class Airspace extends Registry implements AirspaceOptions {
         if (this.#primaryAirport !== null)
             throw new Error("Primary airport is already set");
         this.#primaryAirport = primaryAirport;
+        try {
+            this.addRunway(...primaryAirport.runways)
+        }
+        catch (e) {}
         return this;
     }
 

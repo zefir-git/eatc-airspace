@@ -55,6 +55,7 @@ export class PrimaryAirport {
      * Add a runway to this airport.
      *
      * @param runway The runway to add.
+     * @throws {@link !Error} If the runway is a reverse runway.
      */
     public addRunway(runway: Runway) {
         if (runway.isReverse())

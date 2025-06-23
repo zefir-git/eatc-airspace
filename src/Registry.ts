@@ -18,6 +18,7 @@ export class Registry {
      * Store a named fix in the registry.
      *
      * @param fix The fix to store.
+     * @throws {@link CollisionError} If the fix is already registered in the registry.
      */
     public addFix(...fix: NamedFix[]) {
         for (const b of fix) {
@@ -37,7 +38,7 @@ export class Registry {
      * Retrieve a named fix from the registry.
      *
      * @param name The name of the fix to retrieve.
-     * @throws {NotRegisteredError} If the fix is not registered in the registry.
+     * @throws {@link NotRegisteredError} If the fix is not registered in the registry.
      */
     public getFix(name: string): NamedFix {
         return this.fixes.get(name) ?? (() => {throw new Registry.NotRegisteredError(NamedFix, name);})();
@@ -47,6 +48,7 @@ export class Registry {
      * Store a runway in the registry.
      *
      * @param runway The runway to store.
+     * @throws {@link CollisionError} If the runway is already registered in the registry.
      */
     public addRunway(...runway: Runway[]) {
         for (const r of runway) {
@@ -60,7 +62,7 @@ export class Registry {
      * Retrieve a runway from the registry.
      *
      * @param id The ID of the runway to retrieve.
-     * @throws {NotRegisteredError} If the runway is not registered in the registry.
+     * @throws {@link NotRegisteredError} If the runway is not registered in the registry.
      */
     public getRunway(id: string): Runway {
         return this.runways.get(id) ?? (() => {throw new Registry.NotRegisteredError(Runway, id);})();

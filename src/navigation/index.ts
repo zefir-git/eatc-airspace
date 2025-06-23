@@ -1,4 +1,4 @@
-export {Approach} from "./Approach.js";
+export {Arrival} from "./Arrival.js";
 export {ApproachFix} from "./ApproachFix.js";
 export {Beacon} from "./Beacon.js";
 export {CardinalDirection} from "./CardinalDirection.js";

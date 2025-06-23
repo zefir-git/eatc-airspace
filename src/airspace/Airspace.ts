@@ -15,7 +15,6 @@ export class Airspace extends Registry implements AirspaceOptions {
     public readonly approachCallsign: string;
     public readonly automaticApproach: boolean;
     public readonly boundary: Radius | Shape;
-    public readonly beacons: ReadonlyArray<Beacon>;
     public readonly callsignLettersFrequency: number;
     public readonly ceilingAltitude: number;
     public readonly center: Fix;
@@ -36,6 +35,8 @@ export class Airspace extends Registry implements AirspaceOptions {
     public readonly wakeSeparation: WakeSeparation;
     public readonly zoom: number;
 
+
+    readonly #beacons: Beacon[];
     /**
      * @param options The airspace options.
      */
@@ -76,7 +77,7 @@ export class Airspace extends Registry implements AirspaceOptions {
         this.approachCallsign = approachCallsign;
         this.departureCallsign = departureCallsign;
         this.boundary = boundary;
-        this.beacons = beacons;
+        this.#beacons = Array.from(beacons);
         this.center = center;
         this.elevation = elevation;
         this.floorAltitude = floorAltitude;
@@ -100,5 +101,20 @@ export class Airspace extends Registry implements AirspaceOptions {
 
         this.addFix(...this.beacons)
             .addFix(NamedFix.fromFix(this.center, "@center"));
+    }
+
+    public get beacons(): ReadonlyArray<Beacon> {
+        return this.#beacons;
+    }
+
+    /**
+     * Add a beacon to this airspace.
+     *
+     * @param beacon The beacon to add.
+     */
+    public addBeacon(beacon: Beacon): Airspace {
+        this.#beacons.push(beacon);
+        this.addFix(beacon);
+        return this;
     }
 }

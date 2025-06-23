@@ -1,0 +1,35 @@
+{
+  "name": "eatc-airspace",
+  "version": "0.0.0-dev",
+  "description": "Library and API for Endless ATC custom airspace.",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "docs": "typedoc --options typedoc.json",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": ["atc", "endless atc", "custom", "airport", "airspace"],
+  "author": "Zefir Kirilov",
+  "license": "LGPL-3.0",
+  "type": "module",
+  "files": [
+    "dist/**.js",
+    "dist/**.d.ts"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zefir-git/eatc-airspace.git"
+  },
+  "bugs": {
+    "url": "https://github.com/zefir-git/eatc-airspace/issues"
+  },
+  "devDependencies": {
+    "@types/ini": "^4.1.1",
+    "typedoc": "^0.28.5",
+    "typedoc-plugin-mdn-links": "^5.0.2",
+    "typescript": "^5.8.3"
+  },
+  "dependencies": {
+    "ini": "^5.0.0"
+  }
+}

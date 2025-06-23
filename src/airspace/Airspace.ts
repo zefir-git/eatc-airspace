@@ -2,6 +2,7 @@ import {FrequencyHandoff} from "../FrequencyHandoff.js";
 import {Beacon} from "../navigation/Beacon.js";
 import {Fix} from "../navigation/Fix.js";
 import {NamedFix} from "../navigation/NamedFix.js";
+import {PrimaryAirport} from "../PrimaryAirport.js";
 import {Registry} from "../Registry.js";
 import {Radius} from "../shapes/Radius.js";
 import {Shape} from "../shapes/Shape.js";
@@ -37,6 +38,8 @@ export class Airspace extends Registry implements AirspaceOptions {
 
 
     readonly #beacons: Beacon[];
+    #primaryAirport: PrimaryAirport | null = null;
+
     /**
      * @param options The airspace options.
      */
@@ -116,5 +119,29 @@ export class Airspace extends Registry implements AirspaceOptions {
         this.#beacons.push(beacon);
         this.addFix(beacon);
         return this;
+    }
+
+    /**
+     * Set the primary airport for this airspace.
+     *
+     * @param primaryAirport The primary airport.
+     * @throws {@link !Error} If the primary airport is already set.
+     */
+    public setPrimaryAirport(primaryAirport: PrimaryAirport): Airspace {
+        if (this.#primaryAirport !== null)
+            throw new Error("Primary airport is already set");
+        this.#primaryAirport = primaryAirport;
+        return this;
+    }
+
+    /**
+     * Get the primary airport for this airspace.
+     *
+     * @throws {@link !Error} If the primary airport is not set.
+     */
+    public getPrimaryAirport(): PrimaryAirport {
+        if (this.#primaryAirport === null)
+            throw new Error("Primary airport is not set");
+        return this.#primaryAirport;
     }
 }

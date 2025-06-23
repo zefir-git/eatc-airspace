@@ -67,6 +67,11 @@ export class Airspace extends Registry implements AirspaceOptions {
     public readonly departures: Departure[] = [];
 
     /**
+     * Shapes to draw on the radar screen.
+     */
+    public readonly shapes: Shape[] = [];
+
+    /**
      * @param options The airspace options.
      */
     public constructor({
@@ -222,6 +227,14 @@ export class Airspace extends Registry implements AirspaceOptions {
      */
     public addDeparture(route: Departure) {
         this.departures.push(route);
+        return this;
+    }
+
+    /**
+     * Draw shapes on the radar screen.
+     */
+    public draw(shape: Shape) {
+        this.shapes.push(shape);
         return this;
     }
 }

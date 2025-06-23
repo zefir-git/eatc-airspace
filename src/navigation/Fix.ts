@@ -45,6 +45,9 @@ export class Fix {
      *
      * @param latitude Latitude in DMS.
      * @param longitude Longitude in DMS.
+     *
+     * @throws {@link !SyntaxError} If the DMS components cannot be determined from the string.
+     * @throws {@link !RangeError} If the DMS components are not within the expected ranges.
      */
     public static fromDms(latitude: string, longitude: string): Fix {
         return new Fix(

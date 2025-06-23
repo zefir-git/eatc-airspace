@@ -2,6 +2,7 @@ export * from "./airspace/index.js";
 export * from "./navigation/index.js";
 export * from "./shapes/index.js";
 export {Airline} from "./Airline.js";
+export {CompositeMap} from "./CompositeMap.js";
 export {EntryPoint} from "./EntryPoint.js";
 export {FrequencyHandoff} from "./FrequencyHandoff.js";
 export {parseIni, Ini, IniValue, IniBaseValue} from "./parseIni.js";

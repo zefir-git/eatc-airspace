@@ -1,5 +1,6 @@
 import {NamedFix} from "./navigation/NamedFix.js";
 import {Runway} from "./Runway.js";
+import {SecondaryAirport} from "./SecondaryAirport.js";
 
 /**
  * A registry for storing and retrieving airspace components.
@@ -9,6 +10,7 @@ import {Runway} from "./Runway.js";
  */
 export class Registry {
     protected readonly fixes = new Map<string, NamedFix>();
+    protected readonly airports = new Map<string, SecondaryAirport>();
     protected readonly runways = new Map<string, Runway>();
 
     /** @internal */
@@ -42,6 +44,35 @@ export class Registry {
      */
     public getFix(name: string): NamedFix {
         return this.fixes.get(name) ?? (() => {throw new Registry.NotRegisteredError(NamedFix, name);})();
+    }
+
+    /**
+     * Store a secondary airport in the registry.
+     *
+     * @param airport The airport to store.
+     * @throws {@link CollisionError} If the airport is already registered in the registry.
+     */
+    public addSecondaryAirport(...airport: SecondaryAirport[]) {
+        for (const a of airport) {
+            if (this.airports.has(a.code))
+                throw new Registry.CollisionError(SecondaryAirport, a.code);
+            this.airports.set(a.code, a);
+            try {
+                this.addRunway(...a.runways)
+            }
+            catch (e) {}
+        }
+        return this;
+    }
+
+    /**
+     * Retrieve a secondary airport from the registry.
+     *
+     * @param code The code of the airport to retrieve.
+     * @throws {@link NotRegisteredError} If the airport is not registered in the registry.
+     */
+    public getSecondaryAirport(code: string): SecondaryAirport {
+        return this.airports.get(code) ?? (() => {throw new Registry.NotRegisteredError(SecondaryAirport, code);})();
     }
 
     /**

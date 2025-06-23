@@ -1,10 +1,15 @@
 import {FrequencyHandoff} from "../FrequencyHandoff.js";
 import {Beacon} from "../navigation/Beacon.js";
 import {Fix} from "../navigation/Fix.js";
+import {Arrival} from "../navigation/Arrival.js";
+import {Departure} from "../navigation/Departure.js";
 import {NamedFix} from "../navigation/NamedFix.js";
 import {PrimaryAirport} from "../PrimaryAirport.js";
 import {Registry} from "../Registry.js";
+import {RunwayConfiguration} from "../RunwayConfiguration.js";
 import {SecondaryAirport} from "../SecondaryAirport.js";
+import {Area} from "../shapes/Area.js";
+import {CircleArea} from "../shapes/CircleArea.js";
 import {Radius} from "../shapes/Radius.js";
 import {Shape} from "../shapes/Shape.js";
 import {WakeCategory} from "../WakeCategory.js";
@@ -40,6 +45,26 @@ export class Airspace extends Registry implements AirspaceOptions {
 
     readonly #beacons: Beacon[];
     #primaryAirport: PrimaryAirport | null = null;
+
+    /**
+     * Areas with altitude restriction.
+     */
+    public readonly areas: (Area | CircleArea)[] = [];
+
+    /**
+     * Runway configurations.
+     */
+    public readonly runwayConfigs: RunwayConfiguration[] = [];
+
+    /**
+     * Arrival routes and approaches.
+     */
+    public readonly arrivals: Arrival[] = [];
+
+    /**
+     * Departure routes.
+     */
+    public readonly departures: Departure[] = [];
 
     /**
      * @param options The airspace options.
@@ -157,6 +182,46 @@ export class Airspace extends Registry implements AirspaceOptions {
         super.addSecondaryAirport(...airport);
         for (const a of airport)
             this.addBeacon(a.inboundBeacon);
+        return this;
+    }
+
+    /**
+     * Add an area with an altitude restriction.
+     *
+     * @param area The area to add.
+     */
+    public addArea(area: Area): this {
+        this.areas.push(area);
+        return this;
+    }
+
+    /**
+     * Add a runway configuration.
+     *
+     * @param runwayConfig The runway configuration to add.
+     */
+    public addConfig(runwayConfig: RunwayConfiguration) {
+        this.runwayConfigs.push(runwayConfig);
+        return this;
+    }
+
+    /**
+     * Add an arrival route.
+     *
+     * @param route The arrival route to add.
+     */
+    public addArrival(route: Arrival) {
+        this.arrivals.push(route);
+        return this;
+    }
+
+    /**
+     * Add a departure route.
+     *
+     * @param route The departure route to add.
+     */
+    public addDeparture(route: Departure) {
+        this.departures.push(route);
         return this;
     }
 }

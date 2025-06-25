@@ -43,7 +43,7 @@ export class Arrival extends Route<any> {
     /**
      * The sequence of fixes (waypoints) that define the arrival route.
      */
-    public readonly route: (Fix | ApproachFix)[];
+    public override readonly fixes: (Fix | ApproachFix)[];
 
     /**
      * How to end the arrival.
@@ -78,12 +78,12 @@ export class Arrival extends Route<any> {
         this.beacon = beacon;
         if (Array.isArray(args[0])) {
             this.inboundBearing = undefined;
-            this.route = args[0];
+            this.fixes = args[0];
             this.termination = args[1] ?? new Arrival.End();
         }
         else {
             this.inboundBearing = args[0];
-            this.route = args[1] as (Fix | ApproachFix)[];
+            this.fixes = args[1] as (Fix | ApproachFix)[];
             this.termination = args[2] ?? new Arrival.End();
         }
     }

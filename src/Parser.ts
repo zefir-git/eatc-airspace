@@ -40,7 +40,7 @@ export class Parser {
 
         const [approachCallsign, departureCallsign] = format.airspace.name.split(",").map(c => c.trim());
         if (approachCallsign === "" || departureCallsign === "" || approachCallsign === undefined || departureCallsign === undefined)
-            throw new Error("airspace.name must be in the format: approach callsign, departure callsign");
+            throw new Error(`airspace.name must be in the format: approach callsign, departure callsign; got: ${format.airspace.name}`);
 
         const boundary = format.airspace.boundary !== undefined ? new Polyline(
             format.airspace.boundary.map(this.parseFix.bind(this))) : new Radius(format.airspace.radius!);
@@ -75,7 +75,7 @@ export class Parser {
 
         const [primaryName, primaryPronunciation] = format.airspace.name.split(",").map(c => c.trim());
         if (primaryName === "" || primaryName === undefined)
-            throw new Error("airport1.name must be in the format: name, pronunciation");
+            throw new Error(`airport1.name must be in the format: name, pronunciation; got: ${format.airspace.name}`);
 
         asp.setPrimaryAirport(
             new PrimaryAirport(
@@ -93,10 +93,10 @@ export class Parser {
         for (const secondary of format.secondaryAirports) {
             const [secondaryName, secondaryPronunciation] = secondary.name.split(",").map(c => c.trim());
             if (secondaryName === "" || secondaryName === undefined)
-                throw new Error("Secondary airport name must be in the format: name, pronunciation");
+                throw new Error(`Secondary airport name must be in the format: name, pronunciation; got: ${secondary.name}`);
             const beacon = asp.beacons.find(b => b.name === secondary.inboundBeacon);
             if (beacon === undefined)
-                throw new Error("Secondary airport beacon must be in the list of airspace beacons.");
+                throw new Error(`Secondary airport beacon must be in the list of airspace beacons; got: ${secondary.inboundBeacon}`);
             asp.addSecondaryAirport(new SecondaryAirport(
                     secondary.code,
                     secondaryName,
@@ -119,7 +119,7 @@ export class Parser {
                                     ? area.drawdegrees.split(",").map(c => Number.parseFloat(c.trim()))
                                     : void 0;
                 if (drawDegrees !== undefined && drawDegrees.length !== 2)
-                    throw new Error("Circle area drawdegrees must be in the format: start, end");
+                    throw new Error(`Circle area drawdegrees must be in the format: start, end; got: ${area.drawdegrees}`);
 
 
                 if (area.name !== undefined)
@@ -186,23 +186,25 @@ export class Parser {
         if (data.airspace !== undefined) {
             if (data.airspace.decimaldegrees !== undefined) {
                 if (typeof data.airspace.decimaldegrees !== "boolean")
-                    throw new Error("airspace.decimaldegrees is must be a boolean.");
+                    throw new Error(`airspace.decimaldegrees must be a boolean; got (${typeof data.airspace.decimaldegrees}): ${data.airspace.decimaldegrees}`);
                 this.#decimalDegrees = data.airspace.decimaldegrees;
             }
             else this.#decimalDegrees = false;
 
-            if (typeof data.airspace.inches !== "boolean") {
+            if (data.airspace.inches === undefined) {
                 console.warn("Warning: airspace.inches is not set. Defaulting to false.");
                 data.airspace.inches = false;
             }
+            if (typeof data.airspace.inches !== "boolean")
+                throw new Error(`airspace.inches is required and must be a boolean; got (${typeof data.airspace.inches}): ${data.airspace.inches}`);
             const inches = data.airspace.inches;
 
             if (typeof data.airspace.name !== "string")
-                throw new Error("airspace.name is required and must be a string.");
+                throw new Error(`airspace.name is required and must be a string; got (${typeof data.airspace.name}): ${data.airspace.name}`);
             const name = data.airspace.name;
 
             if (typeof data.airspace.automatic !== "boolean")
-                throw new Error("airspace.automatic is required and must be a boolean.");
+                throw new Error(`airspace.automatic is required and must be a boolean; got (${typeof data.airspace.automatic}): ${data.airspace.automatic}`);
             const automatic = data.airspace.automatic;
 
             if (!Array.isArray(data.airspace.beacons) || data.airspace.beacons.some(b => typeof b !== "string"))
@@ -220,34 +222,34 @@ export class Parser {
                 throw new Error("airspace.boundary must have at least one element.");
 
             if (data.airspace.radius !== undefined && typeof data.airspace.radius !== "number")
-                throw new Error("airspace.radius is required and must be a number.");
+                throw new Error(`airspace.radius is required and must be a number; got (${typeof data.airspace.radius}): ${data.airspace.radius}`);
             const radius = data.airspace.radius;
 
             if (boundary === undefined && radius === undefined)
-                throw new Error("Either airspace.boundary or airspace.radius is required.");
+                throw new Error("At least airspace.boundary or airspace.radius is required (got neither).");
 
             if (boundary !== undefined && radius !== undefined)
                 console.warn(
-                    "Warning: Both airspace.boundary and airspace.radius are set. airspace.boundary will be used.");
+                    "Warning: Both airspace.boundary and airspace.radius are set. Only airspace.boundary will be used.");
 
             if (typeof data.airspace.letters !== "number")
-                throw new Error("airspace.letters is required and must be a number.");
+                throw new Error(`airspace.letters is required and must be a number; got (${typeof data.airspace.letters}): ${data.airspace.letters}`);
             const letters = data.airspace.letters;
 
             if (typeof data.airspace.ceiling !== "number")
-                throw new Error("airspace.ceiling is required and must be a number.");
+                throw new Error(`airspace.ceiling is required and must be a number; got (${typeof data.airspace.ceiling}): ${data.airspace.ceiling}`);
             const ceiling = data.airspace.ceiling;
 
             if (typeof data.airspace.center !== "string")
-                throw new Error("airspace.center is required and must be a string.");
+                throw new Error(`airspace.center is required and must be a string; got (${typeof data.airspace.center}): ${data.airspace.center}`);
             const center = data.airspace.center;
 
             if (typeof data.airspace.above !== "number")
-                throw new Error("airspace.above is required and must be a number.");
+                throw new Error(`airspace.above is required and must be a number; got (${typeof data.airspace.above}): ${data.airspace.above}`);
             const above = data.airspace.above;
 
             if (typeof data.airspace.diversionaltitude !== "number")
-                throw new Error("airspace.diversionaltitude is required and must be a number.");
+                throw new Error(`airspace.diversionaltitude is required and must be a number; got (${typeof data.airspace.diversionaltitude}): ${data.airspace.diversionaltitude}`);
             const diversionaltitude = data.airspace.diversionaltitude;
 
             if (data.airspace.handoff !== undefined
@@ -259,49 +261,59 @@ export class Parser {
                 throw new Error("airspace.handoff must have at least one element.");
 
             if (typeof data.airspace.descentaltitude !== "number")
-                throw new Error("airspace.descentaltitude is required and must be a number.");
+                throw new Error(`airspace.descentaltitude is required and must be a number; got (${typeof data.airspace.descentaltitude}): ${data.airspace.descentaltitude}`);
             const descentaltitude = data.airspace.descentaltitude;
 
             if (typeof data.airspace.elevation !== "number")
-                throw new Error("airspace.elevation is required and must be a number.");
+                throw new Error(`airspace.elevation is required and must be a number; got (${typeof data.airspace.elevation}): ${data.airspace.elevation}`);
             const elevation = data.airspace.elevation;
 
             if (typeof data.airspace.floor !== "number")
-                throw new Error("airspace.floor is required and must be a number.");
+                throw new Error(`airspace.floor is required and must be a number; got (${typeof data.airspace.floor}): ${data.airspace.floor}`);
             const floor = data.airspace.floor;
 
+            if (data.airspace.magneticvar === undefined) {
+                console.warn("Warning: airspace.magneticvar is not set. Defaulting to 0.");
+                data.airspace.magneticvar = 0;
+            }
             if (typeof data.airspace.magneticvar !== "number")
-                throw new Error("airspace.magneticvar is required and must be a number.");
+                throw new Error(`airspace.magneticvar is required and must be a number; got (${typeof data.airspace.magneticvar}): ${data.airspace.magneticvar}`);
             const magneticvar = data.airspace.magneticvar;
 
+            if (data.airspace.metric === undefined) {
+                console.warn("Warning: airspace.metric is not set. Defaulting to false.");
+                data.airspace.metric = false;
+            }
             if (typeof data.airspace.metric !== "boolean")
-                throw new Error("airspace.metric is required and must be a boolean.");
+                throw new Error(`airspace.metric is required and must be a boolean; got (${typeof data.airspace.metric}): ${data.airspace.metric}`);
             const metric = data.airspace.metric;
 
             if (typeof data.airspace.separation !== "number")
-                throw new Error("airspace.separation is required and must be a number.");
+                throw new Error(`airspace.separation is required and must be a number; got (${typeof data.airspace.separation}): ${data.airspace.separation}`);
             const separation = data.airspace.separation;
 
-            if (typeof data.airspace.speedrestriction !== "string") {
-                console.warn("Warning: airspace.speedrestriction is not set. Defaulting to 0, 300, 10000, 250.");
+            if (data.airspace.speedrestriction === undefined) {
+                console.warn("Warning: airspace.speedrestriction is not set. Defaulting to: 0, 300, 10000, 250.");
                 data.airspace.speedrestriction = "0, 300, 10000, 250";
             }
+            if (typeof data.airspace.speedrestriction !== "string")
+                throw new Error(`airspace.speedrestriction is required and must be a string; got (${typeof data.airspace.speedrestriction}): ${data.airspace.speedrestriction}`);
             const speedrestriction = data.airspace.speedrestriction;
 
             if (typeof data.airspace.localizerspeed !== "string")
-                throw new Error("airspace.localizerspeed is required and must be a string.");
+                throw new Error(`airspace.localizerspeed is required and must be a string; got (${typeof data.airspace.localizerspeed}): ${data.airspace.localizerspeed}`);
             const localizerspeed = data.airspace.localizerspeed;
 
             if (typeof data.airspace.strictspawn !== "boolean")
-                throw new Error("airspace.strictspawn is required and must be a boolean.");
+                throw new Error(`airspace.strictspawn is required and must be a boolean; got (${typeof data.airspace.strictspawn}): ${data.airspace.strictspawn}`);
             const strictspawn = data.airspace.strictspawn;
 
             if (typeof data.airspace.transitionaltitude !== "number")
-                throw new Error("airspace.transitionaltitude is required and must be a number.");
+                throw new Error(`airspace.transitionaltitude is required and must be a number; got (${typeof data.airspace.transitionaltitude}): ${data.airspace.transitionaltitude}`);
             const transitionaltitude = data.airspace.transitionaltitude;
 
             if (typeof data.airspace.usa !== "boolean")
-                throw new Error("airspace.usa is required and must be a boolean.");
+                throw new Error(`airspace.usa is required and must be a boolean; got (${typeof data.airspace.usa}): ${data.airspace.usa}`);
             const usa = data.airspace.usa;
 
             if (data.airspace.wake !== undefined
@@ -310,10 +322,10 @@ export class Parser {
                 throw new Error("airspace.wake must be a list of strings.");
             const wake = data.airspace.wake as string[] | undefined;
             if (wake !== undefined && wake.length === 6)
-                throw new Error("airspace.wake must have exactly 6 elements.");
+                throw new Error(`airspace.wake must have exactly 6 elements, got ${wake.length}.`);
 
             if (typeof data.airspace.zoom !== "number")
-                throw new Error("airspace.zoom is required and must be a number.");
+                throw new Error(`airspace.zoom is required and must be a number; got (${typeof data.airspace.zoom}): ${data.airspace.zoom}`);
             const zoom = data.airspace.zoom;
 
             airspace = {
@@ -351,11 +363,11 @@ export class Parser {
         let primaryAirport;
         if (data.airport1 !== undefined) {
             if (typeof data.airport1.name !== "string")
-                throw new Error("airport1.name is required and must be a string.");
+                throw new Error(`airport1.name is required and must be a string; got (${typeof data.airport1.name}): ${data.airport1.name}`);
             const name = data.airport1.name;
 
             if (typeof data.airport1.code !== "string")
-                throw new Error("airport1.code is required and must be a string.");
+                throw new Error(`airport1.code is required and must be a string; got (${typeof data.airport1.code}): ${data.airport1.code}`);
             const code = data.airport1.code;
             if (code.length !== 4)
                 console.warn(`Warning: airport1.code length is ${code.length}, recommended is 4.`);
@@ -367,7 +379,7 @@ export class Parser {
             const runways = data.airport1.runways as string[];
 
             if (typeof data.airport1.climbaltitude !== "number")
-                throw new Error("airport1.climbaltitude is required and must be a number.");
+                throw new Error(`airport1.climbaltitude is required and must be a number; got (${typeof data.airport1.climbaltitude}): ${data.airport1.climbaltitude}`);
             const climbaltitude = data.airport1.climbaltitude;
 
             if (data.airport1.sids !== undefined
@@ -408,11 +420,11 @@ export class Parser {
             .filter(([k]) => k.startsWith("airport"))
             .slice(1)) {
             if (typeof secondaryAirport.name !== "string")
-                throw new Error(`${key}.name is required and must be a string.`);
+                throw new Error(`${key}.name is required and must be a string; got (${typeof secondaryAirport.name}): ${secondaryAirport.name}`);
             const name = secondaryAirport.name;
 
             if (typeof secondaryAirport.code !== "string")
-                throw new Error(`${key}.code is required and must be a string.`);
+                throw new Error(`${key}.code is required and must be a string; got (${typeof secondaryAirport.code}): ${secondaryAirport.code}`);
             const code = secondaryAirport.code;
             if (code.length !== 2)
                 console.warn(`Warning: ${key}.code length is ${code.length}, recommended is 2.`);
@@ -424,11 +436,11 @@ export class Parser {
             const runways = secondaryAirport.runways as string[];
 
             if (typeof secondaryAirport.flow !== "number")
-                throw new Error(`${key}.flow is required and must be a number.`);
+                throw new Error(`${key}.flow is required and must be a number; got (${typeof secondaryAirport.flow}): ${secondaryAirport.flow}`);
             const flow = secondaryAirport.flow;
 
             if (typeof secondaryAirport.inboundbeacon !== "string")
-                throw new Error(`${key}.inboundbeacon is required and must be a string.`);
+                throw new Error(`${key}.inboundbeacon is required and must be a string; got (${typeof secondaryAirport.inboundbeacon}): ${secondaryAirport.inboundbeacon}`);
             const inboundBeacon = secondaryAirport.inboundbeacon;
 
             if (!Array.isArray(secondaryAirport.entrypoints) || secondaryAirport.entrypoints.some(
@@ -445,7 +457,7 @@ export class Parser {
             const airlines = secondaryAirport.airlines as string[];
 
             if (typeof secondaryAirport.climbaltitude !== "number")
-                throw new Error(`${key}.climbaltitude is required and must be a number.`);
+                throw new Error(`${key}.climbaltitude is required and must be a number; got (${typeof secondaryAirport.climbaltitude}): ${secondaryAirport.climbaltitude}`);
             const climbaltitude = secondaryAirport.climbaltitude;
 
             if (secondaryAirport.sids !== undefined
@@ -472,28 +484,28 @@ export class Parser {
         const areas: Parser.Format["areas"] = [];
         for (const [key, area] of Object.entries(data).filter(([k]) => k.startsWith("area"))) {
             if (typeof area.altitude !== "number")
-                throw new Error(`${key}.altitude is required and must be a number.`);
+                throw new Error(`${key}.altitude is required and must be a number; got (${typeof area.altitude}): ${area.altitude}`);
             const altitude = area.altitude;
 
             if (area.name !== undefined && typeof area.name !== "string")
-                throw new Error(`${key}.name must be a string.`);
+                throw new Error(`${key}.name must be a string; got (${typeof area.name}): ${area.name}`);
             const name = area.name;
 
             if (area.labelpos !== undefined && typeof area.labelpos !== "string")
-                throw new Error(`${key}.labelpos must be a string.`);
+                throw new Error(`${key}.labelpos must be a string; got (${typeof area.labelpos}): ${area.labelpos}`);
             const labelpos = area.labelpos;
 
             if (area.shape === "circle") {
                 if (typeof area.radius !== "number")
-                    throw new Error(`${key}.radius is required and must be a number.`);
+                    throw new Error(`${key}.radius is required and must be a number; got (${typeof area.radius}): ${area.radius}`);
                 const radius = area.radius;
 
                 if (typeof area.position !== "string")
-                    throw new Error(`${key}.radius is required and must be a string.`);
+                    throw new Error(`${key}.radius is required and must be a string; got (${typeof area.position}): ${area.position}`);
                 const position = area.position;
 
                 if (area.drawdegrees !== undefined && typeof area.drawdegrees !== "string")
-                    throw new Error(`${key}.drawdegrees must be a string.`);
+                    throw new Error(`${key}.drawdegrees must be a string; got (${typeof area.drawdegrees}): ${area.drawdegrees}`);
                 const drawdegrees = area.drawdegrees;
 
                 areas.push({altitude, name, labelpos, shape: "circle", radius, position, drawdegrees});
@@ -504,20 +516,20 @@ export class Parser {
                 const points = area.points as string[];
 
                 if (area.draw !== undefined && typeof area.draw !== "number")
-                    throw new Error(`${key}.points is required and must be a number.`);
+                    throw new Error(`${key}.points is required and must be a number; got (${typeof area.draw}): ${area.draw}`);
                 const draw = area.draw;
 
                 areas.push({altitude, name, labelpos, shape: "polygon", points, draw});
             }
             else
-                throw new Error(`${key}.shape is required and must be "circle", or "polygon"; got "${area.shape}".`);
+                throw new Error(`${key}.shape is required and must be "circle", or "polygon"; got ${area.shape}`);
         }
 
         const configurations: Parser.Format["configurations"] = [];
         if (data.configurations !== undefined) {
             for (const [key, configuration] of Object.entries(data.configurations)) {
                 if (!key.startsWith("config"))
-                    throw new Error(`configurations.${key} must be in the format "configN"`);
+                    throw new Error(`configurations.${key} must be in the format "configN"; got ${key}.`);
                 if (!Array.isArray(configuration) || configuration.some(c => typeof c !== "string"))
                     throw new Error(`configurations.${key} must be a list of strings.`);
                 if (configuration.length === 0)
@@ -530,7 +542,7 @@ export class Parser {
         const departures: Parser.Format["departures"] = new Map();
         for (const [key, departure] of Object.entries(data).filter(([k]) => k.startsWith("departure"))) {
             if (typeof departure.runway !== "string")
-                throw new Error(`${key}.runway is required and must be a string.`);
+                throw new Error(`${key}.runway is required and must be a string; got (${typeof departure.runway}): ${departure.runway}`);
             if (departures.has(departure.runway))
                 throw new Error(`${key} is duplicate departure with ${key}.runway "${departure.runway}".`);
 
@@ -539,7 +551,7 @@ export class Parser {
                 if (!Array.isArray(route) || route.some(r => typeof r !== "string"))
                     throw new Error(`${key}.${routeKey} must be a list of strings.`);
                 if (route.length < 2)
-                    throw new Error(`${key}.${routeKey} must have at least two elements.`);
+                    throw new Error(`${key}.${routeKey} must have at least two elements, got ${route.length}.`);
                 routes.push(route as string[]);
             }
             if (routes.length === 0)
@@ -551,11 +563,11 @@ export class Parser {
         const approaches: Parser.Format["approaches"] = new CompositeMap();
         for (const [key, approach] of Object.entries(data).filter(([k]) => k.startsWith("approach"))) {
             if (typeof approach.runway !== "string")
-                throw new Error(`${key}.runway is required and must be a string.`);
+                throw new Error(`${key}.runway is required and must be a string; got (${typeof approach.runway}): ${approach.runway}`);
             const runway = approach.runway;
 
             if (typeof approach.beacon !== "string")
-                throw new Error(`${key}.beacon is required and must be a string.`);
+                throw new Error(`${key}.beacon is required and must be a string; got (${typeof approach.beacon}): ${approach.beacon}`);
             const beacon = approach.beacon;
 
             if (approaches.has([runway, beacon]))
@@ -567,7 +579,7 @@ export class Parser {
                 if (!Array.isArray(route) || route.some(r => typeof r !== "string"))
                     throw new Error(`${key}.${routeKey} must be a list of strings.`);
                 if (route.length < 3)
-                    throw new Error(`${key}.${routeKey} must have at least three elements.`);
+                    throw new Error(`${key}.${routeKey} must have at least three elements, got ${route.length}.`);
                 routes.push(route as string[]);
             }
             if (routes.length === 0)
@@ -620,7 +632,7 @@ export class Parser {
     private static parseBeacon(data: string) {
         const [name, latitude, longitude, hold, pronunciation] = data.split(",").map(d => d.trim());
         if (name === undefined || name === "")
-            throw new Error("Beacon name is required and must be a non-empty string.");
+            throw new Error(`Beacon name is required and must be a string; got (${typeof name}): ${name}.`);
         let holdingPattern: Beacon.HoldingPattern | undefined;
         if (hold !== undefined && hold !== "" && hold !== "0" && !Number.isNaN(Number.parseFloat(hold))) {
             const θ = Number.parseFloat(hold);
@@ -637,9 +649,9 @@ export class Parser {
 
     private static parseCoordinates(latitude?: string, longitude?: string) {
         if (latitude === undefined || latitude === "")
-            throw new Error("Fix latitude is required and must be a non-empty string.");
+            throw new Error(`Fix latitude is required and must be a string; got (${typeof latitude}): ${latitude}.`);
         if (longitude === undefined || longitude === "")
-            throw new Error("Fix longitude is required and must be a non-empty string.");
+            throw new Error(`Fix longitude is required and must be a string; got (${typeof longitude}): ${longitude}.`);
         if (/^[NS-]?\d+(?:\.\d+)?$/i.test(latitude) && /^[EW-]?\d+(?:\.\d+)?$/i.test(longitude)) {
             if (!this.#decimalDegrees && (/^\d+(?:\.\d+)?$/i.test(latitude) || /^\d+(?:\.\d+)?$/i.test(longitude)))
                 throw new Error("Only latitude and longitude coordinates are supported by this parser. Numeric coordinates encountered and airspace.decimaldegrees is not true.");
@@ -660,13 +672,13 @@ export class Parser {
     private static parseHandoff(data: string) {
         const [heading, callsign, pronunciation, frequency] = data.split(",").map(d => d.trim());
         if (heading === undefined || heading === "" || Number.isNaN(Number.parseFloat(heading)))
-            throw new Error("Handoff heading is required and must be a number.");
+            throw new Error(`Handoff heading is required and must be a number; got (${typeof heading}): ${heading}.`);
         if (callsign === undefined || callsign === "")
-            throw new Error("Handoff ATC callsign is required and must be a non-empty string.");
+            throw new Error(`Handoff ATC callsign is required and must be a string; got (${typeof callsign}): ${callsign}.`);
         if (pronunciation === undefined || pronunciation === "")
-            throw new Error("Handoff ATC pronunciation is required and must be a non-empty string.");
+            throw new Error(`Handoff ATC pronunciation is required and must be a string; got (${typeof pronunciation}): ${pronunciation}.`);
         if (frequency !== undefined && Number.isNaN(Number.parseFloat(frequency)))
-            throw new Error("Handoff frequency must be a number.");
+            throw new Error(`Handoff frequency must be a number; got (${typeof frequency}): ${frequency}.`);
         return new FrequencyHandoff(Number.parseFloat(heading), callsign, pronunciation,
             frequency !== undefined ? Number.parseFloat(frequency) : undefined);
     }
@@ -675,18 +687,18 @@ export class Parser {
         const [radius, radiusSpeed, altitude, altitudeSpeed] = speedrestriction.split(",").map(d => d.trim());
         const [locDistance, locSpeed] = localizerspeed.split(",").map(d => d.trim());
         if (radius === undefined || radius === "" || Number.isNaN(Number.parseFloat(radius)))
-            throw new Error("Speed restriction radius is required and must be a number.");
+            throw new Error(`Speed restriction radius is required and must be a number; got (${typeof radius}): ${radius}.`);
         if (radiusSpeed === undefined || radiusSpeed === "" || Number.isNaN(Number.parseFloat(radiusSpeed)))
-            throw new Error("Speed restriction speed within radius is required and must be a number.");
+            throw new Error(`Speed restriction speed within radius is required and must be a number; got (${typeof radiusSpeed}): ${radiusSpeed}.`);
         if (locDistance === undefined || locDistance === "" || Number.isNaN(Number.parseFloat(locDistance)))
-            throw new Error("Localiser speed restriction distance is required and must be a number.");
+            throw new Error(`Localiser speed restriction distance is required and must be a number; got (${typeof locDistance}): ${locDistance}.`);
         if (locSpeed === undefined || locSpeed === "" || Number.isNaN(Number.parseFloat(locSpeed)))
-            throw new Error("Localiser speed restriction speed is required and must be a number.");
+            throw new Error(`Localiser speed restriction speed is required and must be a number; got (${typeof locSpeed}): ${locSpeed}.`);
         if (altitude !== undefined) {
             if (Number.isNaN(Number.parseFloat(altitude)))
-                throw new Error("Altitude restriction altitude must be a number.");
+                throw new Error(`Altitude restriction altitude must be a number; got (${typeof altitude}): ${altitude}.`);
             if (altitudeSpeed === undefined || altitudeSpeed === "" || Number.isNaN(altitudeSpeed))
-                throw new Error("Altitude restriction speed at altitude is required and must be a number.");
+                throw new Error(`Altitude restriction speed at altitude is required and must be a number; got (${typeof altitudeSpeed}): ${altitudeSpeed}.`);
             return new SpeedRestriction(
                 new SpeedRestriction.WithinRadius(Number.parseFloat(radius), Number.parseFloat(radiusSpeed)),
                 new SpeedRestriction.BelowAltitude(Number.parseFloat(altitude), Number.parseFloat(altitudeSpeed)),
@@ -716,13 +728,13 @@ export class Parser {
     private static parseWakeRow(data: string): WakeSeparation.Row {
         const cats = data.split(",").map(d => d.trim());
         if (cats.length !== 6)
-            throw new Error("Each wake separation matrix row must have 6 categories.");
+            throw new Error(`Each wake separation matrix row must have 6 categories; got ${cats.length}.`);
         return cats.map(c => {
             const [distance, interval] = c.split("/").map(d => Number.parseFloat(d.trim()));
             if (distance === undefined || interval === undefined)
-                throw new Error("Wake separation matrix cells must be in the format: distance/interval.");
+                throw new Error(`Wake separation matrix cells must be in the format: distance/interval; got ${c}.`);
             if (Number.isNaN(distance) || Number.isNaN(interval))
-                throw new Error("Non-numeric value provided in wake separation matrix cell.");
+                throw new Error(`Non-numeric value provided in wake separation matrix cell: ${c}.`);
             return [distance, interval] as WakeSeparation.Separation;
         }) as WakeSeparation.Row;
     }
@@ -733,10 +745,10 @@ export class Parser {
             glideslope2, localizer2, beacon, distance, beacon2, distance2, towerFrequency, towerPronunciation,
         ] = data.split(",").map(d => d.trim());
         if (id === undefined || id === "")
-            throw new Error("Runway identifier is required and must be a non-empty string.");
+            throw new Error(`Runway identifier is required and must be a string; got (${typeof id}): ${id}.`);
 
         if (name === undefined || name === "")
-            throw new Error("Runway name is required and must be a non-empty string.");
+            throw new Error(`Runway name is required and must be a string; got (${typeof name}): ${name}.`);
         if (!/^((0?[1-9])|([1-2]\d)|(3[0-6]))[LCR]?$/i.test(name))
             throw new Error(
                 `Runway name must be in the format: [1–36] optionally followed by L, C, or R. Got: ${name}`);
@@ -748,41 +760,41 @@ export class Parser {
             throw new Error("Runway true heading is required.");
         const headingNumber = Number.parseFloat(heading);
         if (Number.isNaN(headingNumber))
-            throw new Error("Runway true heading must be a number.");
+            throw new Error(`Runway true heading must be a number; got (${typeof heading}): ${heading}.`);
 
         if (length === undefined)
-            throw new Error("Runway length is required.");
+            throw new Error("Runway length is required");
         const lengthNumber = Number.parseFloat(length);
         if (Number.isNaN(lengthNumber))
-            throw new Error("Runway length must be a number.");
+            throw new Error(`Runway length must be a number; got (${typeof length}): ${length}.`);
 
         const displacedNumber = displaced === undefined ? 0 : Number.parseFloat(displaced);
         if (Number.isNaN(displacedNumber))
-            throw new Error("Runway displaced threshold must be a number.");
+            throw new Error(`Runway displaced threshold must be a number; got (${typeof displaced}): ${displaced}.`);
 
         const displaced2Number = displaced2 === undefined ? 0 : Number.parseFloat(displaced2);
         if (Number.isNaN(displaced2Number))
-            throw new Error("Runway displaced threshold must be a number.");
+            throw new Error(`Runway displaced threshold must be a number; got (${typeof displaced2}): ${displaced2}.`);
 
         const elevationNumber = elevation === undefined ? 0 : Number.parseFloat(elevation);
         if (Number.isNaN(elevationNumber))
-            throw new Error("Runway elevation must be a number.");
+            throw new Error(`Runway elevation must be a number; got (${typeof elevation}): ${elevation}.`);
 
         const glideslopeNumber = glideslope === undefined ? 3 : Number.parseFloat(glideslope);
         if (Number.isNaN(glideslopeNumber))
-            throw new Error("Runway glideslope must be a number.");
+            throw new Error(`Runway glideslope must be a number; got (${typeof glideslope}): ${glideslope}.`);
 
         const localizerNumber = localizer === undefined ? headingNumber : Number.parseFloat(localizer);
         if (Number.isNaN(localizerNumber))
-            throw new Error("Runway localizer must be a number.");
+            throw new Error(`Runway localizer must be a number; got (${typeof localizer}): ${localizer}.`);
 
         const glideslope2Number = glideslope2 === undefined ? 3 : Number.parseFloat(glideslope2);
         if (Number.isNaN(glideslope2Number))
-            throw new Error("Runway opposite glideslope must be a number.");
+            throw new Error(`Runway opposite glideslope must be a number; got (${typeof glideslope2}): ${glideslope2}.`);
 
         const localizer2Number = localizer2 === undefined ? (headingNumber + 180) % 360 : Number.parseFloat(localizer2);
         if (Number.isNaN(localizer2Number))
-            throw new Error("Runway opposite localizer must be a number.");
+            throw new Error(`Runway opposite localizer must be a number; got (${typeof localizer2}): ${localizer2}.`);
 
         let beaconFix: Runway.LocalizerFix | undefined;
         if (beacon !== undefined && beacon !== "0" && beacon !== "") {
@@ -790,7 +802,7 @@ export class Parser {
                 throw new Error("Runway beacon distance is required when beacon name is set.");
             const distanceNumber = Number.parseFloat(distance);
             if (Number.isNaN(distanceNumber))
-                throw new Error("Runway beacon distance must be a number.");
+                throw new Error(`Runway beacon distance must be a number; got (${typeof distance}): ${distance}.`);
             beaconFix = new Runway.LocalizerFix(beacon, distanceNumber);
         }
 
@@ -800,13 +812,13 @@ export class Parser {
                 throw new Error("Runway opposite beacon distance is required when beacon name is set.");
             const distance2Number = Number.parseFloat(distance2);
             if (Number.isNaN(distance2Number))
-                throw new Error("Runway opposite beacon distance must be a number.");
+                throw new Error(`Runway opposite beacon distance must be a number; got (${typeof distance2}): ${distance2}.`);
             beacon2Fix = new Runway.LocalizerFix(beacon2, distance2Number);
         }
 
         const towerFrequencyNumber = towerFrequency === undefined ? 0 : Number.parseFloat(towerFrequency);
         if (Number.isNaN(towerFrequencyNumber))
-            throw new Error("Runway tower frequency must be a number.");
+            throw new Error(`Runway tower frequency must be a number; got (${typeof towerFrequency}): ${towerFrequency}.`);
 
         return new Runway({
             id,
@@ -839,23 +851,23 @@ export class Parser {
             return beacon;
         }
         if (name === undefined || name === "")
-            throw new Error("SID name is required and must be a non-empty string.");
+            throw new Error(`SID name is required and must be a string; got (${typeof name}): ${name}.`);
         return SidFix.fromFix(this.parseCoordinates(latitude, longitude), name, pronunciation);
     }
 
     private static parseAirline(data: string): Airline {
         const [name, amount, type, pronunciation, direction] = data.split(",").map(d => d.trim());
         if (name === undefined || name === "")
-            throw new Error("Airline name is required and must be a non-empty string.");
+            throw new Error(`Airline name is required and must be a string; got (${typeof name}): ${name}.`);
 
         if (amount === undefined)
-            throw new Error("Airline amount is required and must be a non-empty string.");
+            throw new Error(`Airline amount is required and must be a string; got (${typeof amount}): ${amount}.`);
         const amountNumber = Number.parseFloat(amount);
         if (Number.isNaN(amountNumber))
-            throw new Error("Airline amount must be a number.");
+            throw new Error(`Airline amount must be a number; got (${typeof amount}): ${amount}.`);
 
         if (type === undefined || type === "")
-            throw new Error("Airline plane type is required and must be a non-empty string.");
+            throw new Error(`Airline plane type is required and must be a string; got (${typeof type}): ${type}.`);
         const types = type.split("/").map(t => t.trim());
         if (types.length === 0)
             throw new Error("At least one airline plane type is required.");
@@ -898,12 +910,13 @@ export class Parser {
             throw new Error("Entry point bearing is required.");
         const bearingNumber = Number.parseFloat(bearing);
         if (Number.isNaN(bearingNumber))
-            throw new Error("Entry point bearing must be a number.");
+            throw new Error(`Entry point bearing must be a number; got ${bearing}.`);
 
         let altitudeNumber: number | undefined;
         if (altitude !== undefined) {
+            altitudeNumber = Number.parseFloat(altitude);
             if (Number.isNaN(altitudeNumber))
-                throw new Error("Entry point altitude must be a number.");
+                throw new Error(`Entry point altitude must be a number; got ${altitude}.`);
         }
 
         return new EntryPoint(bearingNumber, altitudeNumber, beacon);
@@ -919,7 +932,7 @@ export class Parser {
                     throw new Error("Runway configuration score is required.");
                 const scoreNumber = Number.parseFloat(score);
                 if (Number.isNaN(scoreNumber))
-                    throw new Error("Runway configuration score must be a number.");
+                    throw new Error(`Runway configuration score must be a number; got ${score}.`);
 
                 if (id === undefined)
                     throw new Error("Runway configuration runway id is required.");
@@ -939,7 +952,7 @@ export class Parser {
                 if (offsetheading !== undefined) {
                     offsetHeadingNumber = Number.parseFloat(offsetheading);
                     if (Number.isNaN(offsetHeadingNumber))
-                        throw new Error("Runway configuration offset heading must be a number.");
+                        throw new Error(`Runway configuration offset heading must be a number; got ${offsetheading}.`);
                 }
 
                 const isNosid = nosid === "nosid";
@@ -996,102 +1009,102 @@ export class Parser {
             throw new Error("Aircraft minspeed is required.");
         const minspeedNumber = Number.parseFloat(minspeed);
         if (Number.isNaN(minspeedNumber))
-            throw new Error("Aircraft minspeed must be a number.");
+            throw new Error(`Aircraft minspeed must be a number; got ${minspeed}.`);
 
         if (maxspeed === undefined)
             throw new Error("Aircraft maxspeed is required.");
         const maxspeedNumber = Number.parseFloat(maxspeed);
         if (Number.isNaN(maxspeedNumber))
-            throw new Error("Aircraft maxspeed must be a number.");
+            throw new Error(`Aircraft maxspeed must be a number; got ${maxspeed}.`);
 
         if (minturnrate === undefined)
             throw new Error("Aircraft minturnrate is required.");
         const minturnrateNumber = Number.parseFloat(minturnrate);
         if (Number.isNaN(minturnrateNumber))
-            throw new Error("Aircraft minturnrate must be a number.");
+            throw new Error(`Aircraft minturnrate must be a number; got ${minturnrate}.`);
 
         if (maxturnrate === undefined)
             throw new Error("Aircraft maxturnrate is required.");
         const maxturnrateNumber = Number.parseFloat(maxturnrate);
         if (Number.isNaN(maxturnrateNumber))
-            throw new Error("Aircraft maxturnrate must be a number.");
+            throw new Error(`Aircraft maxturnrate must be a number; got ${maxturnrate}.`);
 
         if (mindescentrate === undefined)
             throw new Error("Aircraft mindescentrate is required.");
         const mindescentrateNumber = Number.parseFloat(mindescentrate);
         if (Number.isNaN(mindescentrateNumber))
-            throw new Error("Aircraft mindescentrate must be a number.");
+            throw new Error(`Aircraft mindescentrate must be a number; got ${mindescentrate}.`);
 
         if (maxdescentrate === undefined)
             throw new Error("Aircraft maxdescentrate is required.");
         const maxdescentrateNumber = Number.parseFloat(maxdescentrate);
         if (Number.isNaN(maxdescentrateNumber))
-            throw new Error("Aircraft maxdescentrate must be a number.");
+            throw new Error(`Aircraft maxdescentrate must be a number; got ${maxdescentrate}.`);
 
         if (minfinalapproachspeed === undefined)
             throw new Error("Aircraft minfinalapproachspeed is required.");
         const minfinalapproachspeedNumber = Number.parseFloat(minfinalapproachspeed);
         if (Number.isNaN(minfinalapproachspeedNumber))
-            throw new Error("Aircraft minfinalapproachspeed must be a number.");
+            throw new Error(`Aircraft minfinalapproachspeed must be a number; got ${minfinalapproachspeed}.`);
 
         if (maxfinalapproachspeed === undefined)
             throw new Error("Aircraft maxfinalapproachspeed is required.");
         const maxfinalapproachspeedNumber = Number.parseFloat(maxfinalapproachspeed);
         if (Number.isNaN(maxfinalapproachspeedNumber))
-            throw new Error("Aircraft maxfinalapproachspeed must be a number.");
+            throw new Error(`Aircraft maxfinalapproachspeed must be a number; got ${maxfinalapproachspeed}.`);
 
         if (minaccel === undefined)
             throw new Error("Aircraft minaccel is required.");
         const minaccelNumber = Number.parseFloat(minaccel);
         if (Number.isNaN(minaccelNumber))
-            throw new Error("Aircraft minaccel must be a number.");
+            throw new Error(`Aircraft minaccel must be a number; got ${minaccel}.`);
 
         if (maxaccel === undefined)
             throw new Error("Aircraft maxaccel is required.");
         const maxaccelNumber = Number.parseFloat(maxaccel);
         if (Number.isNaN(maxaccelNumber))
-            throw new Error("Aircraft maxaccel must be a number.");
+            throw new Error(`Aircraft maxaccel must be a number; got ${maxaccel}.`);
 
         let minRollAngleNumber: number | undefined;
         if (minrollangle !== undefined && minrollangle !== "0") {
             minRollAngleNumber = Number.parseFloat(minrollangle);
             if (Number.isNaN(minRollAngleNumber))
-                throw new Error("Aircraft minrollangle must be a number.");
+                throw new Error(`Aircraft minrollangle must be a number; got ${minrollangle}.`);
         }
 
         let maxRollAngleNumber: number | undefined;
         if (maxrollangle !== undefined && maxrollangle !== "0") {
             maxRollAngleNumber = Number.parseFloat(maxrollangle);
             if (Number.isNaN(maxRollAngleNumber))
-                throw new Error("Aircraft maxrollangle must be a number.");
+                throw new Error(`Aircraft maxrollangle must be a number; got ${maxrollangle}.`);
         }
 
         let minRollRateNumber: number | undefined;
         if (minrollrate !== undefined && minrollrate !== "0") {
             minRollRateNumber = Number.parseFloat(minrollrate);
             if (Number.isNaN(minRollRateNumber))
-                throw new Error("Aircraft minrollrate must be a number.");
+                throw new Error(`Aircraft minrollrate must be a number; got ${minrollrate}.`);
         }
 
         let maxRollRateNumber: number | undefined;
         if (maxrollrate !== undefined && maxrollrate !== "0") {
             maxRollRateNumber = Number.parseFloat(maxrollrate);
             if (Number.isNaN(maxRollRateNumber))
-                throw new Error("Aircraft maxrollrate must be a number.");
+                throw new Error(`Aircraft maxrollrate must be a number; got ${maxrollrate}.`);
         }
 
         let minClimbRateNumber: number | undefined;
         if (minclimbrate !== undefined && minclimbrate !== "0") {
             minClimbRateNumber = Number.parseFloat(minclimbrate);
             if (Number.isNaN(minClimbRateNumber))
-                throw new Error("Aircraft minclimbrate must be a number.");
+                throw new Error(`Aircraft minclimbrate must be a number; got ${minclimbrate}.`);
         }
 
         let maxClimbRateNumber: number | undefined;
         if (maxclimbrate !== undefined && maxclimbrate !== "0") {
             maxClimbRateNumber = Number.parseFloat(maxclimbrate);
             if (Number.isNaN(maxClimbRateNumber))
-                throw new Error("Aircraft maxclimbrate must be a number.");
+                throw new Error(`Aircraft maxclimbrate must be a number; got ${maxclimbrate}.`);
         }
 
         return new Aircraft({
@@ -1151,7 +1164,7 @@ export class Parser {
         for (const route of data[1]) {
             const [name, pronunciation] = route[0]!.split(",").map(d => d.trim());
             if (name === undefined || name === "")
-                throw new Error("Departure name is required and must be a non-empty string.");
+                throw new Error(`Departure name is required and must be a string; got (${typeof name}): ${name}.`);
             if (name.length > 7)
                 console.warn(
                     `Warning: Departure ${name} name is longer than 7 characters. Display limited to 7 characters in-game.`);
@@ -1160,7 +1173,7 @@ export class Parser {
             if (initialClimb !== undefined) {
                 initialClimbNumber = Number.parseFloat(initialClimb);
                 if (Number.isNaN(initialClimbNumber))
-                    throw new Error("Departure initialclimb must be a number.");
+                    throw new Error(`Departure initialclimb must be a number; got ${initialClimb}.`);
             }
             const fixes = route.slice(1).map(this.parseFix.bind(this));
             if (initialClimbNumber !== undefined)
@@ -1196,7 +1209,7 @@ export class Parser {
                        ? this.parseBeacon(beaconString)
                        : asp.beacons.find(b => b.name.toUpperCase() === beaconString.toUpperCase());
         if (beacon === undefined)
-            throw new Error(`Beacon ${beaconString} is not defined in airspace beacons.`);
+            throw new Error(`Arrival beacon ${beaconString} is not defined in airspace beacons.`);
 
         for (const route of data[1]) {
             const [inboundHeadingString, name, pronunciation] = route[0]!.split(",").map(d => d.trim());
@@ -1208,7 +1221,7 @@ export class Parser {
                 throw new Error("Arrival inboundheading must be a number.");
 
             if (name === undefined || name === "")
-                throw new Error("Arrival name is required and must be a non-empty string.");
+                throw new Error(`Arrival name is required and must be a string; got (${typeof name}): ${name}.`);
             if (name.length > 7)
                 console.warn(
                     `Warning: Arrival ${name} name is longer than 7 characters. Display limited to 7 characters in-game.`);
@@ -1227,26 +1240,26 @@ export class Parser {
                 else {
                     const heading = Number.parseFloat(b);
                     if (Number.isNaN(heading))
-                        throw new Error(`Arrival hold heading must be a number, got: ${b}`);
+                        throw new Error(`Arrival hold heading must be a number, got ${b}.`);
                     termination = new Arrival.End(heading);
                 }
             }
             else {
                 const distance = Number.parseFloat(a);
                 if (Number.isNaN(distance))
-                    throw new Error(`Arrival ILS intercept distance must be a number, got: ${a}`);
+                    throw new Error(`Arrival ILS intercept distance must be a number, got ${a}.`);
 
                 const altitude = b !== undefined && b !== "0"
                                  ? Number.parseFloat(b)
                                  : undefined;
                 if (altitude !== undefined && Number.isNaN(altitude))
-                    throw new Error(`Arrival ILS intercept max altitude must be a number, got: ${b}`);
+                    throw new Error(`Arrival ILS intercept max altitude must be a number, got ${b}.`);
 
                 const speed = c !== undefined && c !== "0"
                              ? Number.parseFloat(c)
                              : undefined;
                 if (speed !== undefined && Number.isNaN(speed))
-                    throw new Error(`Arrival ILS intercept max speed must be a number, got: ${c}`);
+                    throw new Error(`Arrival ILS intercept max speed must be a number, got ${c}.`);
 
                 termination = new Arrival.IlsIntercept(distance, altitude, speed);
             }
@@ -1282,12 +1295,12 @@ export class Parser {
                                ? Number.parseFloat(altitude)
                                : undefined;
         if (altitudeNumber !== undefined && Number.isNaN(altitudeNumber))
-            throw new Error("Approach fix altitude must be a number.");
+            throw new Error(`Approach fix altitude must be a number; got ${altitude}.`);
         const speedNumber = speed !== undefined && speed !== "0"
                             ? Number.parseFloat(speed)
                             : undefined;
         if (speedNumber !== undefined && Number.isNaN(speedNumber))
-            throw new Error("Approach fix speed must be a number.");
+            throw new Error(`Approach fix speed must be a number; got ${speed}.`);
         return new ApproachFix(fix.latitude, fix.longitude, altitudeNumber, speedNumber);
     }
 }

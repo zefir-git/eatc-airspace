@@ -16,14 +16,14 @@ export class PrimaryAirport {
      * @param code The identifier displayed in the game for selecting the airspace, typically the airspace ID or the
      *     airport ICAO code.
      * @param name The official name of the airport.
-     * @param pronunciation The pronunciation of the airport name, used by arriving traffic.
      * @param initialClimb The initial climb altitude in feet for departures. This value may be overridden on a per-SID
      *     basis.
+     * @param [pronunciation] The pronunciation of the airport name, used by arriving traffic.
      */
     public constructor(
         public readonly code: string,
         public readonly name: string,
-        public readonly pronunciation: string,
+        public readonly pronunciation: string | undefined,
         public readonly initialClimb: number,
     ) {}
 

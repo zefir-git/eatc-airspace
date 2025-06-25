@@ -13,15 +13,30 @@ function preprocessIni(input: string): string {
 }
 
 export type IniBaseValue = string | number | boolean;
-export type IniValue = IniBaseValue | IniBaseValue[] | Record<string, IniBaseValue>;
+export type IniValue = IniBaseValue | IniBaseValue[];
 
 /**
  * INI file structure.
  */
 export interface Ini {
-    [key: string]: IniValue;
+    [key: string]: Record<string, IniValue>;
 }
 
 export function parseIni(file: string): Ini {
-    return ini.parse(preprocessIni(file));
+    const d = ini.parse(preprocessIni(file));
+    return Object.fromEntries(
+        Object.entries(d).map(([key, value]) => [
+            key,
+            Object.fromEntries(
+                Object.entries(value).map(([key, value]) => {
+                    if (typeof value === "string" && /^\d+(?:\.\d+)?$/.test(value)) {
+                        const n = Number.parseFloat(value);
+                        if (Number.isNaN(n)) return [key, value] as [string, IniValue];
+                        return [key, n] as [string, number];
+                    }
+                    return [key, value] as [string, IniValue];
+                })
+            )
+        ])
+    );
 }

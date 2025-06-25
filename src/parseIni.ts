@@ -1,7 +1,8 @@
 import ini from "ini";
 
 function preprocessIni(input: string): string {
-    return input.replace(
+    return input.replace(/\r\n|\r/g, '\n')
+        .replace(
         /^(\w+)\s*=\s*\n((?:[ \t].*\n?)+)/gm,
         (_, key, block) =>
             block

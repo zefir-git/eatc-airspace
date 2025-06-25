@@ -1,3 +1,4 @@
+import {Aircraft} from "../Aircraft.js";
 import {FrequencyHandoff} from "../FrequencyHandoff.js";
 import {Beacon} from "../navigation/Beacon.js";
 import {Fix} from "../navigation/Fix.js";
@@ -65,6 +66,11 @@ export class Airspace extends Registry implements AirspaceOptions {
      * Departure routes.
      */
     public readonly departures: Departure[] = [];
+
+    /**
+     * Custom aircraft types.
+     */
+    public readonly aircraft: Aircraft[] = [];
 
     /**
      * Shapes to draw on the radar screen.
@@ -227,6 +233,16 @@ export class Airspace extends Registry implements AirspaceOptions {
      */
     public addDeparture(route: Departure) {
         this.departures.push(route);
+        return this;
+    }
+
+    /**
+     * Add a custom aircraft type.
+     *
+     * @param aircraft The aircraft to add.
+     */
+    public addAircraft(aircraft: Aircraft) {
+        this.aircraft.push(aircraft);
         return this;
     }
 

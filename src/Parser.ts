@@ -27,6 +27,8 @@ import {WakeSeparation} from "./WakeSeparation.js";
 export class Parser {
     private constructor() {}
 
+    static #decimalDegrees: boolean = false;
+
     /**
      * Create airspace from INI file.
      *
@@ -182,9 +184,12 @@ export class Parser {
     private static formatIni(data: Ini): Parser.Format {
         let airspace;
         if (data.airspace !== undefined) {
-            if (data.airspace.decimaldegrees !== undefined && data.airspace.decimaldegrees === false)
-                throw new Error(
-                    "This library only works with latitude and longitude and airspace.decimaldegrees must not be false.");
+            if (data.airspace.decimaldegrees !== undefined) {
+                if (typeof data.airspace.decimaldegrees !== "boolean")
+                    throw new Error("airspace.decimaldegrees is must be a boolean.");
+                this.#decimalDegrees = data.airspace.decimaldegrees;
+            }
+            else this.#decimalDegrees = false;
 
             if (typeof data.airspace.inches !== "boolean")
                 throw new Error("airspace.inches is required and must be a boolean.");
@@ -632,6 +637,8 @@ export class Parser {
         if (longitude === undefined || longitude === "")
             throw new Error("Fix longitude is required and must be a non-empty string.");
         if (/^[NS-]?\d+(?:\.\d+)?$/i.test(latitude) && /^[EW-]?\d+(?:\.\d+)?$/i.test(longitude)) {
+            if (!this.#decimalDegrees && (/^\d+(?:\.\d+)?$/i.test(latitude) || /^\d+(?:\.\d+)?$/i.test(longitude)))
+                throw new Error("Only latitude and longitude coordinates are supported by this parser. Numeric coordinates encountered and airspace.decimaldegrees is not true.");
             const latSign = latitude.toUpperCase().startsWith("S") || latitude.toUpperCase().startsWith("-") ? -1 : 1;
             const lonSign = longitude.toUpperCase().startsWith("W") || longitude.toUpperCase().startsWith("-") ? -1 : 1;
             const lat = Number.parseFloat(latitude.replace(/^[NS-]/i, ""));

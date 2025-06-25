@@ -414,8 +414,8 @@ export class Parser {
             if (typeof secondaryAirport.code !== "string")
                 throw new Error(`${key}.code is required and must be a string.`);
             const code = secondaryAirport.code;
-            if (code.length !== 4)
-                console.warn(`Warning: ${key}.code length is ${code.length}, recommended is 4.`);
+            if (code.length !== 2)
+                console.warn(`Warning: ${key}.code length is ${code.length}, recommended is 2.`);
 
             if (!Array.isArray(secondaryAirport.runways) || secondaryAirport.runways.some(r => typeof r !== "string"))
                 throw new Error(`${key}.runways must be a list of strings.`);

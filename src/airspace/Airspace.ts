@@ -13,7 +13,6 @@ import {Area} from "../shapes/Area.js";
 import {CircleArea} from "../shapes/CircleArea.js";
 import {Radius} from "../shapes/Radius.js";
 import {Shape} from "../shapes/Shape.js";
-import {WakeCategory} from "../WakeCategory.js";
 import {WakeSeparation} from "../WakeSeparation.js";
 import {AirspaceOptions} from "./AirspaceOptions.js";
 import {SpeedRestriction} from "./SpeedRestriction.js";
@@ -40,7 +39,7 @@ export class Airspace extends Registry implements AirspaceOptions {
     public readonly strictEntrypoints: boolean;
     public readonly transitionalAltitude: number;
     public readonly usPronunciation: boolean;
-    public readonly wakeSeparation: WakeSeparation;
+    public readonly wakeSeparation?: WakeSeparation;
     public readonly zoom: number;
 
 
@@ -104,14 +103,7 @@ export class Airspace extends Registry implements AirspaceOptions {
         altimeterInHg = false,
         magneticVariance = 0,
         zoom = 7,
-        wakeSeparation = new WakeSeparation({
-            [WakeCategory.SUPER_HEAVY]: [[3, 0], [4, 100], [5, 120], [5, 140], [6, 160], [8, 180]],
-            [WakeCategory.UPPER_HEAVY]: [[0, 0], [3, 0], [4, 0], [4, 100], [5, 120], [7, 140]],
-            [WakeCategory.LOWER_HEAVY]: [[0, 0], [0, 0], [3, 0], [3, 80], [4, 100], [6, 120]],
-            [WakeCategory.UPPER_MEDIUM]: [[0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [5, 120]],
-            [WakeCategory.LOWER_MEDIUM]: [[0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [4, 100]],
-            [WakeCategory.LIGHT]: [[0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [3, 80]],
-        }),
+        wakeSeparation,
     }: AirspaceOptions) {
         super();
         this.approachCallsign = approachCallsign;

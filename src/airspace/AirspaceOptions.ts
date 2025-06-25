@@ -127,5 +127,5 @@ export interface AirspaceOptions {
     /**
      * Wake turbulence separation matrix.
      */
-    wakeSeparation: WakeSeparation;
+    wakeSeparation?: WakeSeparation;
 }

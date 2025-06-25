@@ -52,41 +52,50 @@ export class PrimaryAirport {
     }
 
     /**
-     * Add a runway to this airport.
+     * Add runways to this airport.
      *
-     * @param runway The runway to add.
+     * @param runways The runways to add.
      * @throws {@link !Error} If the runway is a reverse runway.
      */
-    public addRunway(runway: Runway) {
-        if (runway.isReverse())
-            throw new Error("Reverse runways cannot be added to airports.");
-        this.#runways.add(runway);
+    public addRunways(...runways: Runway[]) {
+        for (const runway of runways) {
+            if (runway.isReverse())
+                throw new Error("Reverse runways cannot be added to airports.");
+            this.#runways.add(runway);
+        }
+        return this;
     }
 
     /**
-     * Add a SID to this airport.
+     * Add SIDs to this airport.
      *
-     * @param sid The SID to add.
+     * @param sids The SIDs to add.
      */
-    public addSid(sid: SidFix) {
-        this.#sids.add(sid);
+    public addSids(...sids: SidFix[]) {
+        for (const sid of sids)
+            this.#sids.add(sid);
+        return this;
     }
 
     /**
-     * Add an airline to this airport.
+     * Add airlines to this airport.
      *
-     * @param airline The airline to add.
+     * @param airlines The airlines to add.
      */
-    public addAirline(airline: Airline) {
-        this.#airlines.add(airline);
+    public addAirlines(...airlines: Airline[]) {
+        for (const airline of airlines)
+            this.#airlines.add(airline);
+        return this;
     }
 
     /**
-     * Add an entry point to this airport.
+     * Add entry points to this airport.
      *
-     * @param entryPoint The entry point to add.
+     * @param entryPoints The entry points to add.
      */
-    public addEntry(entryPoint: EntryPoint) {
-        this.#entryPoints.add(entryPoint);
+    public addEntryPoints(...entryPoints: EntryPoint[]) {
+        for (const entryPoint of entryPoints)
+            this.#entryPoints.add(entryPoint);
+        return this;
     }
 }

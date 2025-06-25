@@ -282,8 +282,10 @@ export class Parser {
                 throw new Error("airspace.separation is required and must be a number.");
             const separation = data.airspace.separation;
 
-            if (typeof data.airspace.speedrestriction !== "string")
-                throw new Error("airspace.speedrestriction is required and must be a string.");
+            if (typeof data.airspace.speedrestriction !== "string") {
+                console.warn("Warning: airspace.speedrestriction is not set. Defaulting to 0, 300, 10000, 250.");
+                data.airspace.speedrestriction = "0, 300, 10000, 250";
+            }
             const speedrestriction = data.airspace.speedrestriction;
 
             if (typeof data.airspace.localizerspeed !== "string")

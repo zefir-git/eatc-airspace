@@ -1154,7 +1154,7 @@ export class Parser {
                 throw new Error("Departure name is required and must be a non-empty string.");
             if (name.length > 7)
                 console.warn(
-                    "Warning: Departure name is longer than 7 characters. Display limited to 7 characters in-game.");
+                    `Warning: Departure ${name} name is longer than 7 characters. Display limited to 7 characters in-game.`);
             const [, , initialClimb] = route[1]!.split(",").map(d => d.trim());
             let initialClimbNumber: number | undefined;
             if (initialClimb !== undefined) {
@@ -1211,7 +1211,7 @@ export class Parser {
                 throw new Error("Arrival name is required and must be a non-empty string.");
             if (name.length > 7)
                 console.warn(
-                    "Warning: Arrival name is longer than 7 characters. Display limited to 7 characters in-game.");
+                    `Warning: Arrival ${name} name is longer than 7 characters. Display limited to 7 characters in-game.`);
 
             const fixes = route.slice(1, -1).map(this.parseApproachFix.bind(this));
 

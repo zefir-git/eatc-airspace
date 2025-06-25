@@ -191,8 +191,10 @@ export class Parser {
             }
             else this.#decimalDegrees = false;
 
-            if (typeof data.airspace.inches !== "boolean")
-                throw new Error("airspace.inches is required and must be a boolean.");
+            if (typeof data.airspace.inches !== "boolean") {
+                console.warn("Warning: airspace.inches is not set. Defaulting to false.");
+                data.airspace.inches = false;
+            }
             const inches = data.airspace.inches;
 
             if (typeof data.airspace.name !== "string")

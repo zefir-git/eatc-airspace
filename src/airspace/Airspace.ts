@@ -29,7 +29,7 @@ export class Airspace extends Registry implements AirspaceOptions {
     public readonly departureAltitude: number;
     public readonly departureCallsign: string;
     public readonly departureDiversionAltitude: number;
-    public readonly departureFrequencies: FrequencyHandoff[];
+    public readonly departureFrequencies?: FrequencyHandoff[];
     public readonly descentAltitude: number;
     public readonly elevation: number;
     public readonly floorAltitude: number;

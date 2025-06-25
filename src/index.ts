@@ -7,6 +7,7 @@ export {CompositeMap} from "./CompositeMap.js";
 export {EntryPoint} from "./EntryPoint.js";
 export {FrequencyHandoff} from "./FrequencyHandoff.js";
 export {parseIni, Ini, IniValue, IniBaseValue} from "./parseIni.js";
+export {Parser} from "./Parser.js";
 export {PrimaryAirport} from "./PrimaryAirport.js";
 export {Registry} from "./Registry.js";
 export {Runway} from "./Runway.js";

@@ -832,7 +832,7 @@ export class Parser {
 
     private static parseSid(asp: Airspace, data: string): SidFix {
         const [name, latitude, longitude, pronunciation] = data.split(",").map(d => d.trim());
-        if (latitude === undefined && longitude === undefined && pronunciation === undefined) {
+        if (name !== undefined && latitude === undefined && longitude === undefined && pronunciation === undefined) {
             const beacon = asp.beacons.find(b => b.name.toUpperCase() === name.toUpperCase());
             if (beacon === undefined)
                 throw new Error(`Sid ${name} specifies just the beacon, but the beacon is not defined in airspace.beacons.`);

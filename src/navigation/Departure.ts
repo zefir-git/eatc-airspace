@@ -30,11 +30,6 @@ export class Departure extends Route<Fix> {
     public readonly initialClimb?: number;
 
     /**
-     * The sequence of fixes (waypoints) that define the departure route.
-     */
-    public readonly route: Fix[];
-
-    /**
      * @param name The departure name or identifier, e.g. ‘UMLAT1F’. Display limited to 7 characters in-game.
      * @param pronunciation The phonetic pronunciation of the departure name, e.g. ‘Umlat one foxtrot’.
      * @param runway The departure runway.
@@ -61,10 +56,9 @@ export class Departure extends Route<Fix> {
         this.runway = runway;
         if (args.length === 2) {
             this.initialClimb = args[0];
-            this.route = args[1];
+            this.fixes.push(...args[1]);
         }
-        else {
-            this.route = args[0];
-        }
+        else
+            this.fixes.push(...args[0]);
     }
 }

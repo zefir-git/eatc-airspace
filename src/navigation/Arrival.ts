@@ -17,7 +17,7 @@ export class Arrival extends Route<any> {
     /**
      * The phonetic pronunciation of the arrival name, e.g. ‘Otmet one hotel’.
      */
-    public readonly pronunciation: string;
+    public readonly pronunciation?: string;
 
     /**
      * The runways that need to be active for landings for this arrival to be available.
@@ -43,7 +43,7 @@ export class Arrival extends Route<any> {
     /**
      * The sequence of fixes (waypoints) that define the arrival route.
      */
-    public readonly route: (Fix | ApproachFix)[];
+    public override readonly fixes: (Fix | ApproachFix)[];
 
     /**
      * How to end the arrival.
@@ -53,24 +53,24 @@ export class Arrival extends Route<any> {
 
     /**
      * @param name The name or identifier of this arrival, e.g. ‘OTMET1H’.
-     * @param pronunciation The phonetic pronunciation of the arrival name, e.g. ‘Otmet one hotel’.
+     * @param [pronunciation] The phonetic pronunciation of the arrival name, e.g. ‘Otmet one hotel’.
      * @param runways The runways that need to be active for landings for this arrival to be available.
      * @param beacon The beacon at the start of the arrival.
      * @param inboundBearing The inbound bearing for this arrival.
      * @param route The sequence of fixes (waypoints) that define the arrival route.
      * @param [termination] How to end the arrival.
      */
-    public constructor(name: string, pronunciation: string, runways: Runway[], beacon: Beacon, inboundBearing: number, route: (Fix | ApproachFix)[], termination?: Arrival.Termination);
+    public constructor(name: string, pronunciation: string | undefined, runways: Runway[], beacon: Beacon, inboundBearing: number, route: (Fix | ApproachFix)[], termination?: Arrival.Termination);
     /**
      * @param name The name or identifier of this arrival, e.g. ‘OTMET1H’.
-     * @param pronunciation The phonetic pronunciation of the arrival name, e.g. ‘Otmet one hotel’.
+     * @param [pronunciation] The phonetic pronunciation of the arrival name, e.g. ‘Otmet one hotel’.
      * @param runways The runways that need to be active for landings for this arrival to be available.
      * @param beacon The beacon at the start of the arrival.
      * @param route The sequence of fixes (waypoints) that define the arrival route.
      * @param [termination] How to end the arrival.
      */
-    public constructor(name: string, pronunciation: string, runways: Runway[], beacon: Beacon, route: (Fix | ApproachFix)[], termination?: Arrival.Termination);
-    public constructor(name: string, pronunciation: string, runways: Runway[], beacon: Beacon, ...args: [inboundBearing: number, route: (Fix | ApproachFix)[], termination?: Arrival.Termination] | [route: (Fix | ApproachFix)[], termination?: Arrival.Termination]) {
+    public constructor(name: string, pronunciation: string | undefined, runways: Runway[], beacon: Beacon, route: (Fix | ApproachFix)[], termination?: Arrival.Termination);
+    public constructor(name: string, pronunciation: string | undefined, runways: Runway[], beacon: Beacon, ...args: [inboundBearing: number, route: (Fix | ApproachFix)[], termination?: Arrival.Termination] | [route: (Fix | ApproachFix)[], termination?: Arrival.Termination]) {
         super();
         this.name = name;
         this.pronunciation = pronunciation;
@@ -78,12 +78,12 @@ export class Arrival extends Route<any> {
         this.beacon = beacon;
         if (Array.isArray(args[0])) {
             this.inboundBearing = undefined;
-            this.route = args[0];
+            this.fixes = args[0];
             this.termination = args[1] ?? new Arrival.End();
         }
         else {
             this.inboundBearing = args[0];
-            this.route = args[1] as (Fix | ApproachFix)[];
+            this.fixes = args[1] as (Fix | ApproachFix)[];
             this.termination = args[2] ?? new Arrival.End();
         }
     }

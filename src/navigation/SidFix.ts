@@ -31,7 +31,7 @@ export class SidFix extends NamedFix {
     public static override fromFix(
         fix: Fix,
         name: string,
-        pronunciation: string,
+        pronunciation?: string,
     ): SidFix {
         return new SidFix(fix.latitude, fix.longitude, name, pronunciation);
     }
@@ -42,7 +42,7 @@ export class SidFix extends NamedFix {
      * @param namedFix The named fix.
      * @param pronunciation The pronunciation of the SID fix’s name.
      */
-    public static fromNamedFix(namedFix: NamedFix, pronunciation: string): SidFix {
+    public static fromNamedFix(namedFix: NamedFix, pronunciation?: string): SidFix {
         return new SidFix(namedFix.latitude, namedFix.longitude, namedFix.name, pronunciation);
     }
 }

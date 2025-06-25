@@ -86,6 +86,7 @@ export class Registry {
         for (const r of runway) {
             if (this.runways.has(r.id))
                 throw new Registry.CollisionError(Runway, r.id);
+            this.runways.set(r.id, r);
         }
         return this;
     }

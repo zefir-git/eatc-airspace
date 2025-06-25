@@ -201,7 +201,7 @@ export class Airspace extends Registry implements AirspaceOptions {
      *
      * @param area The area to add.
      */
-    public addArea(area: Area): this {
+    public addArea(area: Area | CircleArea): this {
         this.areas.push(area);
         return this;
     }

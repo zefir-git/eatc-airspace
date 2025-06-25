@@ -85,7 +85,7 @@ export class Parser {
                 format.primaryAirport.climbaltitude,
             )
                 .addRunways(...format.primaryAirport.runways.map(this.parseRunway.bind(this)))
-                .addSids(...format.primaryAirport.sids?.map(this.parseSid.bind(this)) ?? [])
+                .addSids(...format.primaryAirport.sids?.map(s => this.parseSid(asp, s)) ?? [])
                 .addAirlines(...format.primaryAirport.airlines.map(this.parseAirline.bind(this)))
                 .addEntryPoints(...format.primaryAirport.entrypoints.map(this.parseEntryPoint.bind(this))),
         );
@@ -106,7 +106,7 @@ export class Parser {
                     beacon,
                 )
                     .addRunways(...secondary.runways.map(this.parseRunway.bind(this)))
-                    .addSids(...secondary.sids?.map(this.parseSid.bind(this)) ?? [])
+                    .addSids(...secondary.sids?.map(s => this.parseSid(asp, s)) ?? [])
                     .addAirlines(...secondary.airlines.map(this.parseAirline.bind(this)))
                     .addEntryPoints(...secondary.entrypoints.map(this.parseEntryPoint.bind(this))),
             );
@@ -830,8 +830,14 @@ export class Parser {
         });
     }
 
-    private static parseSid(data: string): SidFix {
+    private static parseSid(asp: Airspace, data: string): SidFix {
         const [name, latitude, longitude, pronunciation] = data.split(",").map(d => d.trim());
+        if (latitude === undefined && longitude === undefined && pronunciation === undefined) {
+            const beacon = asp.beacons.find(b => b.name.toUpperCase() === name.toUpperCase());
+            if (beacon === undefined)
+                throw new Error(`Sid ${name} specifies just the beacon, but the beacon is not defined in airspace.beacons.`);
+            return beacon;
+        }
         if (name === undefined || name === "")
             throw new Error("SID name is required and must be a non-empty string.");
         return SidFix.fromFix(this.parseCoordinates(latitude, longitude), name, pronunciation);

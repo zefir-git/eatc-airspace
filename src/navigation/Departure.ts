@@ -16,7 +16,7 @@ export class Departure extends Route<Fix> {
     /**
      * The phonetic pronunciation of the departure name, for example, ‘Umlat one foxtrot’.
      */
-    public readonly pronunciation: string;
+    public readonly pronunciation?: string;
 
     /**
      * The departure runway.
@@ -30,28 +30,23 @@ export class Departure extends Route<Fix> {
     public readonly initialClimb?: number;
 
     /**
-     * The sequence of fixes (waypoints) that define the departure route.
-     */
-    public readonly route: Fix[];
-
-    /**
      * @param name The departure name or identifier, e.g. ‘UMLAT1F’. Display limited to 7 characters in-game.
      * @param pronunciation The phonetic pronunciation of the departure name, e.g. ‘Umlat one foxtrot’.
      * @param runway The departure runway.
      * @param initialClimb Optional initial climb altitude, in feet.
      * @param route The ordered list of fixes defining the departure path.
      */
-    public constructor(name: string, pronunciation: string, runway: Runway, initialClimb: number, route: Fix[]);
+    public constructor(name: string, pronunciation: string | undefined, runway: Runway, initialClimb: number, route: Fix[]);
     /**
      * @param name The departure name or identifier, e.g. ‘UMLAT1F’. Display limited to 7 characters in-game.
      * @param pronunciation The phonetic pronunciation of the departure name, e.g. ‘Umlat one foxtrot’.
      * @param runway The departure runway.
      * @param route The ordered list of fixes defining the departure path.
      */
-    public constructor(name: string, pronunciation: string, runway: Runway, route: Fix[]);
+    public constructor(name: string, pronunciation: string | undefined, runway: Runway, route: Fix[]);
     public constructor(
         name: string,
-        pronunciation: string,
+        pronunciation: string | undefined,
         runway: Runway,
         ...args: [initialClimb: number, route: Fix[]] | [route: Fix[]]
     ) {
@@ -61,10 +56,9 @@ export class Departure extends Route<Fix> {
         this.runway = runway;
         if (args.length === 2) {
             this.initialClimb = args[0];
-            this.route = args[1];
+            this.fixes.push(...args[1]);
         }
-        else {
-            this.route = args[0];
-        }
+        else
+            this.fixes.push(...args[0]);
     }
 }

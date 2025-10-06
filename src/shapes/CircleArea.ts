@@ -27,7 +27,7 @@ export class CircleArea extends Radius {
     /**
      * Position of the label.
      */
-    public readonly label: Fix;
+    public readonly label?: Fix;
 
     /**
      * Start and end angle of the visible arc, as bearings in degrees from true north. If omitted, the full circle is
@@ -43,35 +43,35 @@ export class CircleArea extends Radius {
      * @param altitude The minimum allowed altitude in feet.
      * @param center The centre of the circle.
      * @param radius The radius of the circle, in nautical miles.
-     * @param label Position of the label.
+     * @param [label] Position of the label.
      * @param [visibleArc] Start and end angle of the visible arc, as bearings in degrees from true north. If omitted,
      *     the full circle is visible.
      */
-    public constructor(name: string, altitude: number, center: Fix, radius: number, label: Fix, visibleArc?: [start: number, end: number]);
+    public constructor(name: string, altitude: number, center: Fix, radius: number, label?: Fix, visibleArc?: [start: number, end: number]);
     /**
      * @param altitude The minimum allowed altitude in feet.
      * @param center The centre of the circle.
      * @param radius The radius of the circle, in nautical miles.
-     * @param label Position of the label.
+     * @param [label] Position of the label.
      * @param [visibleArc] Start and end angle of the visible arc, as bearings in degrees from true north. If omitted,
      *     the full circle is visible.
      */
-    public constructor(altitude: number, center: Fix, radius: number, label: Fix, visibleArc?: [start: number, end: number]);
+    public constructor(altitude: number, center: Fix, radius: number, label?: Fix, visibleArc?: [start: number, end: number]);
 
     /**
      * @param airport The airport whose traffic should be exempt from the altitude restriction.
      * @param altitude The minimum allowed altitude in feet.
      * @param center The centre of the circle.
      * @param radius The radius of the circle, in nautical miles.
-     * @param label Position of the label.
+     * @param [label] Position of the label.
      * @param [visibleArc] Start and end angle of the visible arc, as bearings in degrees from true north. If omitted,
      *     the full circle is visible.
      */
-    public constructor(airport: SecondaryAirport, altitude: number, center: Fix, radius: number, label: Fix, visibleArc?: [start: number, end: number]);
+    public constructor(airport: SecondaryAirport, altitude: number, center: Fix, radius: number, label?: Fix, visibleArc?: [start: number, end: number]);
 
     public constructor(...args:
-        [name: string | SecondaryAirport, altitude: number, center: Fix, radius: number, label: Fix, visibleArc?: [start: number, end: number]]
-        | [altitude: number, center: Fix, radius: number, label: Fix, visibleArc?: [start: number, end: number]]
+        [name: string | SecondaryAirport, altitude: number, center: Fix, radius: number, label?: Fix, visibleArc?: [start: number, end: number]]
+        | [altitude: number, center: Fix, radius: number, label?: Fix, visibleArc?: [start: number, end: number]]
     ) {
         if (typeof args[0] === "number") {
             const [altitude, center, radius, label, visibleArc] = args as [altitude: number, center: Fix, radius: number, label: Fix, visibleArc?: [start: number, end: number]];

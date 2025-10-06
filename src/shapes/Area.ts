@@ -22,7 +22,7 @@ export class Area extends Shape {
     /**
      * Position of the label.
      */
-    public readonly label: Fix;
+    public readonly label?: Fix;
 
     /**
      * Number of lines from the end of the area to make invisible. Set to `Infinity` to make the entire area invisible.
@@ -36,38 +36,38 @@ export class Area extends Shape {
      *     altitude restriction. If no name is specified, traffic to or from the {@link PrimaryAirport} is exempt from
      *     the altitude restriction.
      * @param altitude The minimum allowed altitude in feet.
-     * @param label Position of the label.
      * @param vertices Vertices that define the area.
+     * @param [label] Position of the label.
      * @param [invisible] Number of lines from the end of the area to make invisible. Set to `Infinity` to make the
      *     entire area invisible. Omit to make the entire area visible.
      */
-    public constructor(name: string, altitude: number, label: Fix, vertices: Iterable<Fix>, invisible?: number);
+    public constructor(name: string, altitude: number, vertices: Iterable<Fix>, label?: Fix, invisible?: number);
 
     /**
      * @param altitude The minimum allowed altitude in feet.
-     * @param label Position of the label.
      * @param vertices Vertices that define the area.
+     * @param [label] Position of the label.
      * @param [invisible] Number of lines from the end of the area to make invisible. Set to `Infinity` to make the
      *     entire area invisible. Omit to make the entire area visible.
      */
-    public constructor(altitude: number, label: Fix, vertices: Iterable<Fix>, invisible?: number);
+    public constructor(altitude: number, vertices: Iterable<Fix>, label?: Fix, invisible?: number);
 
     /**
      * @param airport The airport whose traffic should be exempt from the altitude restriction.
      * @param altitude The minimum allowed altitude in feet.
-     * @param label Position of the label.
      * @param vertices Vertices that define the area.
+     * @param [label] Position of the label.
      * @param [invisible] Number of lines from the end of the area to make invisible. Set to `Infinity` to make the
      *     entire area invisible. Omit to make the entire area visible.
      */
-    public constructor(airport: SecondaryAirport, altitude: number, label: Fix, vertices: Iterable<Fix>, invisible?: number);
+    public constructor(airport: SecondaryAirport, altitude: number, vertices: Iterable<Fix>, label?: Fix, invisible?: number);
 
     public constructor(...args:
-        [name: string | SecondaryAirport, altitude: number, label: Fix, vertices: Iterable<Fix>, invisible?: number]
-        | [altitude: number, label: Fix, vertices: Iterable<Fix>, invisible?: number]
+        [name: string | SecondaryAirport, altitude: number, vertices: Iterable<Fix>, label?: Fix, invisible?: number]
+        | [altitude: number, vertices: Iterable<Fix>, label?: Fix, invisible?: number]
     ) {
         if (typeof args[0] === "number") {
-            const [altitude, label, vertices, invisible] = args as [altitude: number, label: Fix, vertices: Iterable<Fix>, invisible?: number];
+            const [altitude, vertices, label, invisible] = args as [altitude: number, vertices: Iterable<Fix>, label: Fix, invisible?: number];
             super(vertices);
             this.name = undefined;
             this.altitude = altitude;
@@ -75,7 +75,7 @@ export class Area extends Shape {
             this.invisible = invisible;
         }
         else {
-            const [name, altitude, label, vertices, invisible] = args as [name: string | SecondaryAirport, altitude: number, label: Fix, vertices: Iterable<Fix>, invisible?: number];
+            const [name, altitude, vertices, label, invisible] = args as [name: string | SecondaryAirport, altitude: number, vertices: Iterable<Fix>, label: Fix, invisible?: number];
             super(vertices);
             this.name = typeof name === "string" ? name : name.code;
             this.altitude = altitude;

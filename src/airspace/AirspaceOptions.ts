@@ -71,7 +71,7 @@ export interface AirspaceOptions {
     /**
      * Hand-off frequencies for departures.
      */
-    departureFrequencies: FrequencyHandoff[];
+    departureFrequencies?: FrequencyHandoff[];
 
     /**
      * Speed restrictions.
@@ -127,5 +127,5 @@ export interface AirspaceOptions {
     /**
      * Wake turbulence separation matrix.
      */
-    wakeSeparation: WakeSeparation;
+    wakeSeparation?: WakeSeparation;
 }

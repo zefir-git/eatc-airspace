@@ -19,10 +19,10 @@ export class Beacon extends SidFix {
         latitude: number,
         longitude: number,
         name: string,
-        public override readonly pronunciation: string,
+        pronunciation?: string,
         public readonly holdingPattern?: Beacon.HoldingPattern
     ) {
-        super(latitude, longitude, name);
+        super(latitude, longitude, name, pronunciation);
     }
 
     /**
@@ -35,7 +35,7 @@ export class Beacon extends SidFix {
      */
     public static override fromFix(fix: Fix,
         name: string,
-        pronunciation: string,
+        pronunciation?: string,
         holdingPattern?: Beacon.HoldingPattern): Beacon {
         return new Beacon(fix.latitude, fix.longitude, name, pronunciation, holdingPattern);
     }
@@ -47,7 +47,7 @@ export class Beacon extends SidFix {
      * @param pronunciation The pronunciation of the beacon’s name.
      * @param [holdingPattern] The holding pattern of the beacon.
      */
-    public static override fromNamedFix(namedFix: NamedFix, pronunciation: string, holdingPattern?: Beacon.HoldingPattern): Beacon {
+    public static override fromNamedFix(namedFix: NamedFix, pronunciation?: string, holdingPattern?: Beacon.HoldingPattern): Beacon {
         return new Beacon(namedFix.latitude, namedFix.longitude, namedFix.name, pronunciation, holdingPattern);
     }
 }

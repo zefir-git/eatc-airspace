@@ -16,7 +16,7 @@ export class Aircraft {
     /**
      * Name of the aircraft manufacturer.
      */
-    public readonly manufacturer: string;
+    public readonly manufacturer?: string;
 
     /**
      * Wake turbulence category.
@@ -67,7 +67,7 @@ export class Aircraft {
     /**
      * @param options Aircraft performance parameters.
      * @param options.type ICAO type designator.
-     * @param options.manufacturer Name of the aircraft manufacturer.
+     * @param [options.manufacturer] Name of the aircraft manufacturer.
      * @param options.category Wake turbulence category.
      * @param options.speed Range of the assignable speed in KIAS.
      * @param options.approachSpeed Range of final approach speeds in KIAS. May be lower than {@link speed}.
@@ -93,12 +93,12 @@ export class Aircraft {
         bankRate = [3, 5],
     }: {
         type: string;
-        manufacturer: string;
+        manufacturer?: string;
         category: WakeCategory;
         speed: [min: number, max: number];
         approachSpeed: [min: number, max: number];
         acceleration: [min: number, max: number];
-        climbRate: [min: number, max: number];
+        climbRate?: [min: number, max: number];
         descentRate: [min: number, max: number];
         turnRate: [min: number, max: number];
         bankAngle: [min: number, max: number];

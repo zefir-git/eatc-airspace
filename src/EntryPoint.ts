@@ -8,7 +8,7 @@ export class EntryPoint {
      * @param [beacon] The beacon from {@link Airspace#beacons} towards which arrivals from this entry point will be directed.
      */
     public constructor(
-        public readonly bearing: string,
+        public readonly bearing: number,
         public readonly altitude?: number,
         public readonly beacon?: string,
     ) {}

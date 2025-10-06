@@ -41,7 +41,7 @@ export class Airline {
         callsign: string,
         public readonly frequency: number,
         public readonly types: Set<string>,
-        public readonly direction: Set<CardinalDirection | number>,
+        public readonly direction?: Set<CardinalDirection | number>,
         public readonly pronunciation?: string,
     ) {
         this.callsign = callsign;

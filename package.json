@@ -30,6 +30,6 @@
     "typescript": "^5.8.3"
   },
   "dependencies": {
-    "ini": "^5.0.0"
+    "ini": "^6.0.0"
   }
 }
